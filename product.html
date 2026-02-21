@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="navbar">
+        <h2>Product Details</h2>
+        <a href="index.html">⬅ Back</a>
+    </div>
+
+    <div class="card" id="productBox"></div>
+
+    <script>
+        let product =
+            JSON.parse(localStorage.getItem("product"));
+
+        document.getElementById("productBox").innerHTML = `
+<h2>${product.name}</h2>
+<p>Price: ₹${product.price}</p>
+<button onclick="add()">Add to Cart</button>
+`;
+
+        function add() {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            cart.push(product);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            alert("Added to cart ✅");
+        }
+    </script>
+
+</body>
+
+</html>

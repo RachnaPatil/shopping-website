@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Order History</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: #f5f5f5;
+        }
+
+        .products .card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 8px;
+            flex-wrap: wrap;
+        }
+
+        .products .card img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        body.dark {
+            background-color: #121212;
+            color: #fff;
+        }
+
+        body.dark .products .card {
+            background-color: #1e1e1e;
+            border-color: #444;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <h2>Your Orders 📦</h2>
+        <a href="index.html">⬅ Back to Home</a>
+        <button onclick="clearOrders()">Clear All</button>
+    </div>
+
+    <div class="products" id="orderItems"></div>
+
+    <script>
+        let orders = JSON.parse(localStorage.getItem("orders")) || [];
+        const container = document.getElementById("orderItems");
+
+        function renderOrders() {
+            container.innerHTML = "";
+            if (orders.length === 0) {
+                container.innerHTML = "<h3 style='padding:20px'>No orders yet</h3>";
+            }
+            orders.forEach((item, index) => {
+                let div = document.createElement("div");
+                div.className = "card";
+                div.innerHTML = `
+                    <img src="${item.img}" />
+                    <h3>${item.name}</h3>
+                    <p>Price: ₹${item.price}</p>
+                    <p>Qty: ${item.qty || 1}</p>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function clearOrders() {
+            if (confirm("Are you sure you want to clear your order history?")) {
+                orders = [];
+                localStorage.removeItem("orders");
+                renderOrders();
+            }
+        }
+
+        renderOrders();
+    </script>
+</body>
+
+</html>

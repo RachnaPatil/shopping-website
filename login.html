@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="card" style="margin:50px auto;">
+        <h2>Login</h2>
+
+        <input id="name" placeholder="Enter Name"><br><br>
+        <button onclick="login()">Login</button>
+
+    </div>
+
+    <script>
+        function login() {
+            let name = document.getElementById("name").value;
+            localStorage.setItem("user", name);
+            alert("Welcome " + name + " 🎉");
+            window.location = "index.html";
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Your Cart</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: #f5f5f5;
+        }
+
+        .navbar h2 {
+            margin: 0;
+        }
+
+        .products .card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 8px;
+            flex-wrap: wrap;
+        }
+
+        .products .card img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .products .card button {
+            padding: 6px 10px;
+            margin-top: 5px;
+            cursor: pointer;
+        }
+
+        .products .card input[type=number] {
+            width: 50px;
+            margin-left: 5px;
+        }
+
+        #total {
+            padding-left: 30px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .navbar a,
+        .navbar button {
+            margin-left: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <h2>Your Cart 🛒</h2>
+        <div>
+            <a href="index.html">⬅ Back to Home</a>
+            <button onclick="clearCart()">Clear All</button>
+        </div>
+    </div>
+
+    <div class="products" id="cartItems"></div>
+
+    <h2 id="total">Total: ₹0</h2>
+
+    <button onclick="checkout()" style="margin:30px;font-size:18px;padding:12px 20px;">
+        Proceed to Checkout
+    </button>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const container = document.getElementById("cartItems");
+        const totalText = document.getElementById("total");
+
+        function renderCart() {
+            container.innerHTML = "";
+            let total = 0;
+
+            if (cart.length === 0) {
+                container.innerHTML = "<h3 style='padding:20px'>Cart is empty</h3>";
+            }
+
+            cart.forEach((item, index) => {
+                total += Number(item.price) * (item.qty || 1);
+                let div = document.createElement("div");
+                div.className = "card";
+                div.innerHTML = `
+                    <img src="${item.img}" />
+                    <h3>${item.name}</h3>
+                    <p>Price: ₹${item.price}</p>
+                    Qty: <input type="number" min="1" value="${item.qty || 1}" onchange="updateQty(${index},this.value)">
+                    <p>Subtotal: ₹<span id="sub-${index}">${item.price * (item.qty || 1)}</span></p>
+                    <button onclick="removeItem(${index})">Remove</button>
+                `;
+                container.appendChild(div);
+            });
+
+            totalText.innerText = "Total: ₹" + total;
+            updateCartCount();
+        }
+
+        function removeItem(i) {
+            cart.splice(i, 1);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            renderCart();
+        }
+
+        function updateQty(i, val) {
+            cart[i].qty = Number(val);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            renderCart();
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert("Cart is empty!");
+                return;
+            }
+            let orders = JSON.parse(localStorage.getItem("orders")) || [];
+            orders = orders.concat(cart);
+            localStorage.setItem("orders", JSON.stringify(orders));
+            alert("🎉 Order Placed Successfully!");
+            localStorage.removeItem("cart");
+            cart = [];
+            renderCart();
+        }
+
+        function clearCart() {
+            if (confirm("Are you sure you want to clear the cart?")) {
+                cart = [];
+                localStorage.removeItem("cart");
+                renderCart();
+            }
+        }
+
+        function updateCartCount() {
+            const cartCount = document.querySelector('.cart');
+            if (cartCount) {
+                cartCount.innerText = `🛒 Cart (${cart.length})`;
+            }
+        }
+
+        renderCart();
+    </script>
+
+</body>
+
+</html>
